@@ -2,6 +2,7 @@ package com.infor.scs.interviews.interfaces;
 
 import com.infor.scs.interviews.domain.GlossaryResponse;
 import com.infor.scs.interviews.domain.IconsResponse;
+import com.infor.scs.interviews.transformers.GlossaryTransformer;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
@@ -66,7 +67,9 @@ public class NationalWeatherServiceInterface {
         Response response = requestCall.execute();
 
         if( response.isSuccessful() ) {
-            return glossaryResponseAdapter.fromJson( response.body().string() );
+            GlossaryResponse glossary = glossaryResponseAdapter.fromJson( response.body().string() );
+            GlossaryTransformer.transform( glossary );
+            return glossary;
         }
         else {
             throw new IOException( "Invalid response from National Weather Service: " + response.message() );
